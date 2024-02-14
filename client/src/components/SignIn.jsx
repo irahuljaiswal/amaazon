@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css"; 
 
 export default function SignIn() {
   const [data, setData] = React.useState({
@@ -7,16 +9,47 @@ export default function SignIn() {
     password: "",
   });
 
-  console.log(data);
+  // console.log(data);
 
   const addData = (e) => {
     const { name, value } = e.target;
 
     setData(() => {
-      return { 
+      return {
         ...data,
-        [name]: value };
+        [name]: value,
+      };
     });
+  };
+
+  const senddata = async (e) => {
+    e.preventDefault();
+    const {email, password} = data;
+    const res = await fetch("http://localhost:8005/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        email,
+        password,
+      }),
+    });
+
+    const datas =  await res.json()
+    console.log(datas);
+
+    if(res.status == 400 || !data){
+      toast.warn("invalid details entered",{
+        position:"top-center"
+      })
+    }
+    else{
+      toast.success("Welcome user", {
+        position: "top-center",
+      });
+      setData({...data, email:"", password:""})
+    }
   };
 
   return (
@@ -30,13 +63,15 @@ export default function SignIn() {
       </Link>
       <div className="signin--card">
         <h1 signin--heading>Sign in</h1>
-        <form action="">
+        <form action="" method="POST">
           <h5>Email</h5>
-          <input type="text" name="email" onChange={addData} />
+          <input type="text" name="email" onChange={addData} value={data.email} />
 
           <h5>Password</h5>
-          <input type="password" name="password" onChange={addData} />
-          <button className="signin--button">Sign in</button>
+          <input type="password" name="password" onChange={addData} value={data.password}/>
+          <button className="signin--button" onClick={senddata}>
+            Sign in
+          </button>
         </form>
         <p>
           By Signing in, you agree to Amazon Clone's Conditions of Use and
@@ -67,6 +102,7 @@ export default function SignIn() {
           <button className="create--acc">Create your Amazon account</button>
         </Link>
       </div>
+      <ToastContainer/>
     </div>
   );
 }

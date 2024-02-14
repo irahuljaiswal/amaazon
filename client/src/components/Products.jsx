@@ -6,13 +6,13 @@ import "react-toastify/dist/ReactToastify.css";
 export default function Products({id,img, detail,rating, price, off}) {
    const [{basket}, dispatch] = useStateValue();
 
-  React.useEffect(() => {
-    if (basket.length > 0) {
-      toast.success("Item added to cart", {
-        autoClose: 900,
-      });
-    }
-  },[basket]);
+  // React.useEffect(() => {
+  //   if (basket.length > 0) {
+  //     toast.success("Item added to cart", {
+  //       autoClose: 900,
+  //     });
+  //   }
+  // },[basket]);
 
    const addToBasket = () => {
      dispatch({
